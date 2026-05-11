@@ -1,0 +1,50 @@
+header.site-header
+  nav.nav
+    .nav-left
+      a.logo(href="/") Shop
+
+      ul.nav-links
+        li
+          a(href="/products") Products
+
+    .nav-right
+      ul.nav-links
+        li
+          a(href="/cart")
+            | Cart
+            if cartItemCount && cartItemCount > 0
+              span.cart-badge #{cartItemCount}
+
+        if user
+          //- ================= USER LINKS =================
+          li
+            a(href="/dashboard") Dashboard
+
+          li
+            a(href="/orders") My Orders
+
+          li
+            a(href="/profile") Profile
+
+          //- ================= ADMIN LINKS =================
+          if user.role === 'admin'
+            li.dropdown
+              span Admin ▾
+              ul.dropdown-menu
+                li
+                  a(href="/admin/products") Manage Products
+                li
+                  a(href="/admin/orders") Manage Orders
+                li
+                  a(href="/admin/users") Manage Users
+
+          li
+            form(method="POST", action="/auth/logout")
+              input(type="hidden", name="_csrf", value=csrfToken)
+              button.link-button(type="submit") Logout
+
+        else
+          li
+            a(href="/auth/login") Login
+          li
+            a(href="/auth/signup") Sign up

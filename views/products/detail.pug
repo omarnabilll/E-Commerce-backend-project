@@ -1,0 +1,117 @@
+extends ../layout
+
+block content
+  section.product-detail
+    .product-detail-grid
+
+      //- =====================
+      //- Product Media
+      //- =====================
+      .product-media
+        if product.imageCover
+          img.main-image(
+            src=product.imageCover,
+            alt=product.name
+          )
+        else
+          img.main-image(
+            src="/images/product-placeholder.png",
+            alt="No image available"
+          )
+
+        if product.images && product.images.length > 0
+          .product-gallery
+            each imgUrl in product.images
+              img.gallery-thumb(
+                src=imgUrl,
+                alt=product.name
+              )
+
+      //- =====================
+      //- Product Summary
+      //- =====================
+      .product-summary
+        h1.product-name= product.name
+        p.product-price $#{product.price}
+
+        if product.stock > 0
+          p.stock.in-stock In stock (#{product.stock} available)
+        else
+          p.stock.out-of-stock Out of stock
+
+        if product.description
+          p.product-description= product.description
+
+        if error
+          .form-error= error
+
+        form(method="POST", action="/cart/add-to-cart")
+          input(type="hidden", name="_csrf", value=csrfToken)
+          input(type="hidden", name="productId", value=product._id)
+
+          .form-group
+            label(for="quantity") Quantity
+            input#quantity(
+              type="number",
+              name="quantity",
+              min="1",
+              value=quantity || 1,
+              required
+            )
+
+          button.btn.btn-primary(type="submit") Add to cart
+
+    //- =====================
+    //- Reviews Section
+    //- =====================
+    section.reviews
+      h2 Reviews
+
+      if averageRating
+        .average-rating
+          span Average rating:
+          .stars
+            each n in [1,2,3,4,5]
+              if n <= Math.round(averageRating)
+                span.star.filled ★
+              else
+                span.star ☆
+          span.rating-number (#{averageRating} / 5)
+
+      if reviews && reviews.length > 0
+        each review in reviews
+          .review
+            p.review-author= review.user.name
+
+            .review-rating
+              .stars
+                each n in [1,2,3,4,5]
+                  if n <= review.rating
+                    span.star.filled ★
+                  else
+                    span.star ☆
+
+            p.review-comment= review.comment
+      else
+        p No reviews yet.
+
+      if user
+        form(method="POST", action=`/products/${product._id}/reviews`)
+          input(type="hidden", name="_csrf", value=csrfToken)
+          .form-group
+            label(for="rating") Rate the Product!
+            select(name="rating", required)
+              option(value="") Select rating
+              each n in [1,2,3,4,5]
+                option(value=n)= n
+
+          .form-group
+            label(for="comment") Comment
+            textarea(name="comment", rows="3")
+
+          button.btn.btn-primary(type="submit") Submit review
+      else
+        p
+          | Please 
+          a(href="/auth/login") log in
+          |  to leave a review.

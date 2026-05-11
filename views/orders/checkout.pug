@@ -1,0 +1,71 @@
+extends ../layout
+
+block content
+  section.section
+    .checkout-container
+      h1 Checkout
+
+      if cart && cart.items.length > 0
+        .checkout-grid
+
+          //- =====================
+          //- Order Summary
+          //- =====================
+          .checkout-summary
+            h2 Order Summary
+
+            table.checkout-table
+              thead
+                tr
+                  th Product
+                  th Qty
+                  th Price
+                  th Subtotal
+              tbody
+                each item in cart.items
+                  tr
+                    td
+                      if item.product
+                        = item.product.name
+                      else
+                        | Product removed
+                    td= item.quantity
+                    td $#{item.price}
+                    td $#{item.price * item.quantity}
+
+            .checkout-total
+              h3 Total: $#{cart.totalPrice}
+
+          //- =====================
+          //- Shipping Info
+          //- =====================
+          .checkout-form
+            h2 Shipping Information
+
+            form(method="POST", action="/checkout")
+              input(type="hidden", name="_csrf", value=csrfToken)
+
+              .form-group
+                label(for="fullName") Full Name
+                input(type="text", name="fullName", id="fullName", required)
+
+              .form-group
+                label(for="address") Address
+                input(type="text", name="address", id="address", required)
+
+              .form-group
+                label(for="city") City
+                input(type="text", name="city", id="city", required)
+
+              .form-group
+                label(for="postalCode") Postal Code
+                input(type="text", name="postalCode", id="postalCode", required)
+
+              .form-group
+                label(for="country") Country
+                input(type="text", name="country", id="country", required)
+
+              button.btn.btn-primary(type="submit")
+                | Proceed to Payment
+      else
+        p Your cart is empty.

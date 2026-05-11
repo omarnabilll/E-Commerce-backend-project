@@ -1,0 +1,58 @@
+extends ../layout
+
+block content
+  section.section
+    .profile-container
+      h1 My Profile
+
+      if error
+        .form-error= error
+
+      //- =====================
+      //- Profile Info Form
+      //- =====================
+      .profile-grid
+        .profile-avatar
+          if user.avatar
+            img.profile-img(src=user.avatar, alt=user.name)
+          else
+            img.profile-img(src="/images/avatar-placeholder.png", alt="Avatar")
+
+        form.profile-form(
+          method="POST",
+          action="/profile/update-info",
+          enctype="multipart/form-data"
+        )
+         input(type="hidden", name="_csrf", value=csrfToken)
+          .form-group
+            label(for="name") Name
+            input(type="text", name="name", value=user.name, required)
+
+          .form-group
+            label(for="email") Email
+            input(type="email", name="email", value=user.email, required)
+
+          .form-group
+            label Avatar
+            input(type="file", name="avatar", accept="image/*")
+
+          button.btn.btn-primary(type="submit") Update Profile
+
+      hr
+
+      //- =====================
+      //- Password Form
+      //- =====================
+      h2 Change Password
+
+      form.profile-form(method="POST", action="/profile/update-password")
+        input(type="hidden", name="_csrf", value=csrfToken)
+        .form-group
+          label Current Password
+          input(type="password", name="currentPassword", required)
+
+        .form-group
+          label New Password
+          input(type="password", name="newPassword", required)
+
+        button.btn.btn-primary(type="submit") Update Password

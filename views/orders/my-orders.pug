@@ -1,0 +1,35 @@
+extends ../layout
+
+block content
+  section.section
+    .orders-container
+      h1 My Orders
+
+      if orders && orders.length > 0
+        table.orders-table
+          thead
+            tr
+              th Order ID
+              th Date
+              th Total
+              th Status
+              th Details
+          tbody
+            each order in orders
+              tr
+                td= order._id
+                td= order.createdAt.toDateString()
+                td $#{order.totalAmount}
+                td
+                  if order.status === 'paid'
+                    span.status.paid Paid
+                  else if order.status === 'pending'
+                    span.status.pending Pending
+                  else if order.status ==="delivered"
+                    span.status.paid completed 
+                  else
+                    span.status.failed Failed
+                td
+                  a.btn-small(href=`/orders/${order._id}`) View
+      else
+        p You have no orders yet.

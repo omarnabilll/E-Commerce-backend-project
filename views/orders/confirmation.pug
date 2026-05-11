@@ -1,0 +1,15 @@
+extends ../layout
+
+block content
+  section.section
+    .status-page
+      .status-icon.success ✓
+      h1 Payment successful
+
+      p.status-message
+        | Thank you for your order. Your payment has been received and your order
+        | is now being processed.
+
+      .status-actions
+        a.btn.btn-primary(href="/orders") View my orders
+        a.btn(href="/products") Continue shopping

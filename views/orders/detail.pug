@@ -1,0 +1,60 @@
+extends ../layout
+
+block content
+  section.section
+    .order-detail-container
+      h1 Order Details
+
+      .order-meta
+        p
+          strong Order ID:
+          |  #{order._id}
+
+        p
+          strong Date:
+          |  #{order.createdAt.toDateString()}
+
+        p
+          strong Status:
+          if order.status === 'paid'
+            span.status.paid Paid
+          else if order.status === 'pending'
+            span.status.pending Pending
+          else if order.status ==="delivered"
+                    span.status.paid completed 
+          else
+            span.status.failed Failed
+
+      hr
+
+      h2 Ordered Items
+
+      if order.items && order.items.length > 0
+        table.order-items-table
+          thead
+            tr
+              th Product
+              th Quantity
+              th Price
+              th Subtotal
+          tbody
+            each item in order.items
+              tr
+                td
+                  if item.product
+                    a(href=`/products/${item.product.slug || item.product._id}`)
+                      = item.product.name
+                  else
+                    | Product no longer available
+                td= item.quantity
+                td $#{item.price}
+                td $#{item.price * item.quantity}
+      else
+        p No items found in this order.
+
+      hr
+
+      .order-total
+        h3 Total: $#{order.totalAmount}
+
+      a.btn.btn-primary(href="/orders") Back to Orders

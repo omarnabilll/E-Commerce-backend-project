@@ -1,0 +1,88 @@
+extends ../layout
+
+block content
+  section.section
+    .admin-orders-container
+      h1 Manage Orders
+
+      if orders && orders.length > 0
+        table.admin-orders-table
+          thead
+            tr
+              th Order ID
+              th User
+              th Date
+              th Total
+              th Payment
+              th Status
+              th Actions
+          tbody
+            each order in orders
+              tr
+                td= order._id
+
+                td
+                  if order.user
+                    | #{order.user.name} (#{order.user.email})
+                  else
+                    | User deleted
+
+                td= order.createdAt.toDateString()
+
+                td $#{order.totalAmount}
+
+                //- =====================
+                //- Payment Status
+                //- =====================
+                td
+                  if order.paymentStatus === 'paid'
+                    span.status.paid Paid
+                  else if order.paymentStatus === 'pending'
+                    span.status.pending Pending
+                  else if order.paymentStatus === 'failed'
+                    span.status.failed Failed
+                  else
+                    span.status.pending #{order.paymentStatus}
+
+                //- =====================
+                //- Fulfillment Status
+                //- =====================
+                td
+                  if order.status === 'pending'
+                    span.status.pending Pending
+                  else if order.status === 'shipped'
+                    span.status.shipped Shipped
+                  else if order.status === 'delivered'
+                    span.status.delivered Delivered
+                  else
+                    span.status.pending #{order.status}
+
+                //- =====================
+                //- Actions
+                //- =====================
+                td
+                  a.btn-small(href=`/orders/${order._id}`) View
+
+                  form(
+                    method="POST",
+                    action=`/admin/orders/${order._id}/status`,
+                    style="display:inline; margin-left:8px;"
+                  )
+                    input(type="hidden", name="_csrf", value=csrfToken)
+                    select(name="status")
+                      option(
+                        value="pending",
+                        selected=order.status === 'pending'
+                      ) Pending
+                      option(
+                        value="shipped",
+                        selected=order.status === 'shipped'
+                      ) Shipped
+                      option(
+                        value="delivered",
+                        selected=order.status === 'delivered'
+                      ) Delivered
+
+                    button.btn-small(type="submit") Update
+      else
+        p No orders found.

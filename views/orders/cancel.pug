@@ -1,0 +1,15 @@
+extends ../layout
+
+block content
+  section.section
+    .status-page
+      .status-icon.error ✕
+      h1 Payment cancelled
+
+      p.status-message
+        | Your payment was not completed. No charges were made.
+        | You can try again or return to your cart.
+
+      .status-actions
+        a.btn.btn-primary(href="/cart") Return to cart
+        a.btn(href="/products") Continue shopping

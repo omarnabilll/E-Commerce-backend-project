@@ -1,0 +1,88 @@
+extends ../layout
+
+block content
+  section.section
+    .section-header
+      h1 Products
+
+    form(method="GET", action="/products").product-filters
+      .filter-row
+        input(
+          type="text"
+          name="search"
+          placeholder="Search products..."
+          value=currentSearch
+        )
+
+        select(name="category")
+          option(value="") All Categories
+          option(value="electronics", selected=currentCategory === "electronics") Electronics
+          option(value="clothing", selected=currentCategory === "clothing") Clothing
+          option(value="books", selected=currentCategory === "books") Books
+
+        input(
+          type="number"
+          name="minPrice"
+          placeholder="Min price"
+          value=currentMinPrice
+          min="0"
+        )
+
+        input(
+          type="number"
+          name="maxPrice"
+          placeholder="Max price"
+          value=currentMaxPrice
+          min="0"
+        )
+
+        button(type="submit") Apply
+
+    if products && products.length > 0
+      .product-grid
+        each product in products
+          article.product-card
+            a(href=`/products/${product.slug || product._id}`)
+              
+              //- Product Image
+              .product-image
+                if product.imageCover
+                  img(
+                    src=product.imageCover
+                    alt=product.name
+                    loading="lazy"
+                  )
+                else
+                  img(
+                    src="/images/product-placeholder.png"
+                    alt="No image available"
+                    loading="lazy"
+                  )
+
+              //- Product Info
+              .product-info
+                h2.product-title= product.name
+                p.product-price $#{product.price}
+
+    else
+      p No products found.
+
+  //- Pagination
+  if pagination && pagination.totalPages > 1
+    section.section.pagination
+      nav.pagination-nav
+        ul.pagination-list
+          if pagination.hasPrev
+            li
+              a(
+                href=`?page=${pagination.page - 1}&search=${encodeURIComponent(currentSearch)}&category=${encodeURIComponent(currentCategory)}&minPrice=${currentMinPrice}&maxPrice=${currentMaxPrice}`
+              ) ← Prev
+
+          li.active
+            span Page #{pagination.page} of #{pagination.totalPages}
+
+          if pagination.hasNext
+            li
+              a(
+                href=`?page=${pagination.page + 1}&search=${encodeURIComponent(currentSearch)}&category=${encodeURIComponent(currentCategory)}&minPrice=${currentMinPrice}&maxPrice=${currentMaxPrice}`
+              ) Next →

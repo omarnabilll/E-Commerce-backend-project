@@ -1,0 +1,14 @@
+extends layout
+
+block content
+  section.section
+    .status-page
+      .status-icon.error ⚠
+      h1 #{error.statusCode || 500} – Something went wrong
+
+      p.status-message
+        | #{error.message || 'An unexpected error occurred. Please try again later.'}
+
+      .status-actions
+        a.btn.btn-primary(href="/") Go home
+        a.btn(href="javascript:history.back()") Go back

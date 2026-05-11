@@ -1,0 +1,32 @@
+extends ../layout
+
+block content
+  section.section
+    h1 Manage Users
+
+    table.admin-table
+      thead
+        tr
+          th Name
+          th Email
+          th Role
+          th Verified
+          th Joined
+          th Actions
+      tbody
+        each user in users
+          tr
+            td #{user.name}
+            td #{user.email}
+            td #{user.role}
+            td #{user.verified ? 'Yes' : 'No'}
+            td #{user.createdAt.toDateString()}
+
+            td
+              if user._id.toString() !== user.id
+                form(method="POST", action=`/admin/users/${user._id}/role`)
+                  input(type="hidden", name="_csrf", value=csrfToken)
+                  select(name="role")
+                    option(value="user", selected=user.role==='user') User
+                    option(value="admin", selected=user.role==='admin') Admin
+                  button(type="submit") Update

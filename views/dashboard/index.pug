@@ -1,0 +1,47 @@
+extends ../layout
+
+block content
+  section.section
+    .container
+      h1 My Dashboard
+
+      .dashboard-grid
+        .dashboard-card
+          h3 Account Information
+          p Welcome back, #{user.name}!
+          p Email: #{user.email}
+          p Role: #{user.role}
+          a.btn.btn-primary(href="/profile") Edit Profile
+
+        .dashboard-card
+          h3 Recent Orders
+          if orders && orders.length > 0
+            ul.order-list
+              each order in orders.slice(0, 3)
+                li.order-item
+                  .order-header
+                    strong Order ##{order._id.toString().slice(-8)}
+                    span.order-date #{order.createdAt.toLocaleDateString()}
+                  .order-status Status: #{order.status}
+                  .order-total Total: $#{order.totalAmount}
+                  a.btn.btn-sm(href=`/orders/${order._id}`) View Details
+            if orders.length > 3
+              a.btn.btn-secondary(href="/orders") View All Orders
+          else
+            p No orders yet.
+            a.btn.btn-primary(href="/products") Start Shopping
+
+        .dashboard-card
+          h3 Quick Actions
+          .quick-actions
+            a.btn.btn-outline(href="/cart") View Cart
+            a.btn.btn-outline(href="/products") Browse Products
+            a.btn.btn-outline(href="/profile") Update Profile
+
+      if user.role === 'admin'
+        .dashboard-card.admin-panel
+          h3 Admin Panel
+          .admin-links
+            a.btn.btn-admin(href="/admin/products") Manage Products
+            a.btn.btn-admin(href="/admin/users") Manage Users
+            a.btn.btn-admin(href="/admin/orders") Manage Orders

@@ -1,0 +1,60 @@
+extends layout
+
+block content
+  //- =====================
+  //- Hero Section
+  //- =====================
+  section.hero
+    .hero-content
+      h1 Simple, reliable shopping
+      p.hero-text
+        | Browse quality products, add them to your cart, and check out securely.
+      a.btn.btn-primary(href="/products") Shop products
+
+  //- =====================
+  //- Featured Products
+  //- =====================
+  section.section
+    .section-header
+      h2 Featured products
+      a.section-link(href="/products") View all
+
+    .product-grid
+      if featuredProducts && featuredProducts.length > 0
+        each product in featuredProducts
+          article.product-card
+            a(href=`/products/${product.slug || product._id}`)
+              .product-image
+                if product.imageCover
+                  img(
+                    src=product.imageCover,
+                    alt=product.name,
+                    loading="lazy"
+                  )
+                else
+                  img(
+                    src="/images/product-placeholder.png",
+                    alt="No image available"
+                  )
+              .product-info
+                h3.product-title= product.name
+                p.product-price $#{product.price}
+      else
+        p No products available yet.
+
+  //- =====================
+  //- Info Section
+  //- =====================
+  section.section.section-muted
+    .info-grid
+      .info-item
+        h3 Secure payments
+        p All payments are processed securely through Stripe.
+
+      .info-item
+        h3 Fast checkout
+        p Complete your order in just a few clicks.
+
+      .info-item
+        h3 Order tracking
+        p View your order history and status anytime.

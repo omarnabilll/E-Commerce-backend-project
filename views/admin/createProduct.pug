@@ -1,0 +1,44 @@
+extends ../layout
+
+block content
+  .admin-container
+    h1 Create Product
+
+    form.form(
+      method='POST'
+      action='/admin/products/create'
+      enctype='multipart/form-data'
+    )
+      input(type="hidden", name="_csrf", value=csrfToken)
+
+      .form-group
+        label(for='name') Product Name
+        input(type='text' name='name' required)
+
+      .form-group
+        label(for='description') Description
+        textarea(name='description' rows='4' required)
+
+      .form-group
+        label(for='price') Price
+        input(type='number' name='price' step='0.01' required)
+
+      .form-group
+        label(for='stock') Stock
+        input(type='number' name='stock' required)
+
+      .form-group
+        label(for='category') Category
+        input(type='text' name='category')
+
+      hr
+
+      .form-group
+        label Cover Image
+        input(type='file' name='imageCover' accept='image/*' required)
+
+      .form-group
+        label Gallery Images
+        input(type='file' name='images' accept='image/*' multiple)
+
+      button.btn.btn-primary(type='submit') Create Product

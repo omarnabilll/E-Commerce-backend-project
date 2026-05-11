@@ -1,0 +1,46 @@
+extends ../layout
+
+block content
+  section.section
+    h1 Your cart
+
+    if cart && cart.items && cart.totalItems > 0
+      .cart-layout
+        //- Cart items
+        .cart-items
+          each item in cart.items
+            .cart-item
+              .cart-item-image
+                img(src=item.product.imageCover , alt=item.product.name)
+
+              .cart-item-details
+                h2.cart-item-title #{item.product.name}
+                p.cart-item-price $#{item.price}
+
+                form(method="POST", action=`/cart/update/${item.product._id}`)
+                  input(type="hidden", name="_csrf", value=csrfToken)
+                  input(type="hidden", name="productId", value=item.product._id)
+                  input.cart-qty(type="number", name="quantity", min="1", value=item.quantity)
+                  button.link-button(type="submit") Update
+
+                form(method="POST", action=`/cart/remove/${item.product._id}`)
+                  input(type="hidden", name="_csrf", value=csrfToken)
+                  input(type="hidden", name="productId", value=item.product._id)
+                  button.link-button(type="submit") Remove
+
+        //- Summary
+        .cart-summary
+          h2 Order summary
+
+          .summary-row
+            span Shipping
+            span Free
+
+          .summary-row.summary-total
+            span Total
+            span $#{cart.totalPrice}
+
+          a.btn.btn-primary.btn-block(href="/checkout") Proceed to checkout
+    else
+      p Your cart is empty.
+      a.btn(href="/products") Continue shopping

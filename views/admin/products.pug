@@ -1,0 +1,45 @@
+extends ../layout
+
+block content
+  .admin-container
+    .admin-header
+      h1 Manage Products
+      a.btn.btn-primary(href='/admin/products/create') + Create Product
+
+    if products.length === 0
+      p No products found.
+    else
+      table.admin-table
+        thead
+          tr
+            th Image
+            th Name
+            th Price
+            th Stock
+            th Created
+            th Actions
+        tbody
+          each product in products
+            tr
+              td
+                if product.imageCover
+                  img.admin-thumb(src=product.imageCover, alt=product.name)
+                else
+                  span No image
+              td= product.name
+              td $#{product.price}
+              td 
+                if product.stock > 0
+                  span.in-stock In Stock (#{product.stock})
+                else
+                  span.out-stock Out of Stock
+              td= product.createdAt.toDateString()
+              td
+                a.btn-small.btn-edit(href=`/admin/products/${product._id}/edit`) Edit
+                form(
+                  action=`/admin/products/${product._id}?_method=DELETE`
+                  method='POST'
+                  style='display:inline'
+                )
+                  input(type="hidden", name="_csrf", value=csrfToken)
+                  button.btn-small.btn-danger(type='submit') Delete
